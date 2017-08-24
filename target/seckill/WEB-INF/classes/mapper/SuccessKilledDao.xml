@@ -1,0 +1,32 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.seckill.dao.SuccessKilledDao">
+    <insert id="insertSuccessKilled">
+        <!--解决主键冲突时报错，直接不让它插入，返回影响0行-->
+        INSERT ignore INTO success_killed(seckill_id,user_phone,state)
+        VALUES (#{seckillId},#{userPhone},0)
+    </insert>
+
+    <select id="queryByIdWithSeckill" resultType="SuccessKilled">
+        <!--sk.seckill_id会被转换为seckillId,
+        所以给successKilled中的seckill属性赋值用ognl表达式,
+        "seckill.seckillId"可以不要双引号，""前可以加as，可以写成seckill.seckill_id
+        -->
+        SELECT
+        sk.seckill_id,
+        sk.user_phone,
+        sk.create_time,
+        sk.state,
+        s.seckill_id "seckill.seckill_id",
+        s.name "seckill.name",
+        s.number "seckill.number",
+        s.start_time "seckill.start_time",
+        s.end_time "seckill.end_time",
+        s.create_time "seckill.create_time"
+        FROM success_killed sk,seckill s
+        WHERE  sk.seckill_id = s.seckill_id
+        AND sk.seckill_id = #{seckillId}
+        AND sk.user_phone = #{userPhone}
+    </select>
+</mapper>
