@@ -1,2 +1,2 @@
 # seckill
-seckill demo,study from mooc
+seckill demo
